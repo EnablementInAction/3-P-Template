@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3P Learning Model Template</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #F4F4F4; color: #333333; font-size: 13px; line-height: 1.5; }
+
+  /* PRINT */
+  @media print {
+    .no-print { display: none; }
+    body { background: white; font-size: 11px; }
+    .page { box-shadow: none; margin: 0; border-radius: 0; }
+    section { page-break-inside: avoid; }
+  }
+
+  /* LAYOUT */
+  .page { max-width: 900px; margin: 20px auto; background: white; border-radius: 8px; box-shadow: 0 2px 16px rgba(0,0,0,0.08); overflow: hidden; }
+
+  /* HEADER */
+  .header { background: #333333; color: white; padding: 28px 36px 24px; display: flex; align-items: center; gap: 24px; }
+  .logo-box { width: 110px; height: 60px; border: 2px dashed #2BB5A8; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .logo-box span { color: #2BB5A8; font-size: 10px; text-align: center; line-height: 1.3; }
+  .logo-box { cursor: pointer; background: rgba(255,255,255,0.06); }
+  .logo-box:hover { background: rgba(255,255,255,0.12); }
+  .logo-box img { max-width: 100%; max-height: 100%; display: none; object-fit: contain; }
+  .logo-box.has-logo { border-style: solid; }
+  .logo-box.has-logo span { display: none; }
+  .logo-box input[type=file] { display: none; }
+  .header-text h1 { font-size: 20px; font-weight: 700; letter-spacing: 0.3px; color: white; }
+  .header-text p { font-size: 11px; color: #2BB5A8; margin-top: 4px; letter-spacing: 1.2px; text-transform: uppercase; }
+
+  /* META BAR */
+  .meta-bar { background: #2BB5A8; padding: 10px 36px; display: flex; gap: 32px; flex-wrap: wrap; }
+  .meta-item { display: flex; flex-direction: column; }
+  .meta-item label { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.75); }
+  .meta-item input { background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.4); color: white; font-size: 12px; width: 160px; outline: none; padding: 2px 0; }
+  .meta-item input::placeholder { color: rgba(255,255,255,0.5); font-style: italic; }
+
+  /* BODY */
+  .body { padding: 28px 36px; display: flex; flex-direction: column; gap: 28px; }
+
+  /* OBJECTIVE BLOCK */
+  .objective-block { background: #F4F4F4; border-left: 4px solid #2BB5A8; border-radius: 0 6px 6px 0; padding: 14px 18px; }
+  .objective-block label { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: #2BB5A8; font-weight: 700; display: block; margin-bottom: 6px; }
+  .objective-block textarea { width: 100%; background: transparent; border: none; outline: none; font-family: inherit; font-size: 13px; color: #333333; resize: vertical; min-height: 42px; }
+  .objective-block textarea::placeholder { color: #aaa; font-style: italic; }
+
+  /* SECTION */
+  section { border-radius: 6px; overflow: hidden; }
+  .section-header { display: flex; align-items: center; gap: 12px; padding: 12px 18px; }
+  .s-presage .section-header { background: #2BB5A8; }
+  .s-process .section-header { background: #333333; }
+  .s-product .section-header { background: #FF6B6B; }
+  .s-risks .section-header, .s-timeline .section-header { background: #F4F4F4; border-bottom: 2px solid #2BB5A8; }
+  .section-pill { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; flex-shrink: 0; }
+  .s-presage .section-pill { background: white; color: #2BB5A8; }
+  .s-process .section-pill { background: #2BB5A8; color: white; }
+  .s-product .section-pill { background: white; color: #FF6B6B; }
+  .s-risks .section-pill, .s-timeline .section-pill { background: #2BB5A8; color: white; }
+  .section-title { font-size: 14px; font-weight: 700; letter-spacing: 0.3px; }
+  .s-presage .section-title, .s-process .section-title, .s-product .section-title { color: white; }
+  .s-risks .section-title, .s-timeline .section-title { color: #333333; }
+  .section-subtitle { font-size: 10px; letter-spacing: 0.5px; }
+  .s-presage .section-subtitle { color: rgba(255,255,255,0.75); }
+  .s-process .section-subtitle { color: rgba(255,255,255,0.65); }
+  .s-product .section-subtitle { color: rgba(255,255,255,0.75); }
+  .s-risks .section-subtitle, .s-timeline .section-subtitle { color: #888; }
+  .section-body { padding: 18px; background: #F4F4F4; display: flex; flex-direction: column; gap: 16px; }
+
+  /* SUBSECTION */
+  .subsection { background: white; border-radius: 6px; padding: 14px 16px; }
+  .subsection h3 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; font-weight: 700; }
+  .s-presage .subsection h3 { color: #2BB5A8; }
+  .s-process .subsection h3 { color: #333333; border-bottom: 2px solid #2BB5A8; padding-bottom: 4px; }
+  .s-product .subsection h3 { color: #FF6B6B; }
+  .s-risks .subsection h3, .s-timeline .subsection h3 { color: #2BB5A8; }
+
+  /* GRID */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+  /* FIELD */
+  .field { display: flex; flex-direction: column; gap: 3px; }
+  .field label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.8px; color: #888; font-weight: 600; }
+  .field input, .field textarea, .field select { border: 1px solid #e0e0e0; border-radius: 4px; padding: 6px 8px; font-family: inherit; font-size: 12px; color: #333; outline: none; background: #fafafa; transition: border 0.2s; width: 100%; }
+  .field input:focus, .field textarea:focus { border-color: #2BB5A8; background: white; }
+  .field textarea { resize: vertical; min-height: 52px; }
+  .hint { font-size: 10px; color: #aaa; font-style: italic; }
+
+  /* CHECKLIST */
+  .checklist { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .check-item { display: flex; align-items: center; gap: 8px; font-size: 12px; cursor: pointer; }
+  .check-item input[type=checkbox] { accent-color: #2BB5A8; width: 14px; height: 14px; cursor: pointer; flex-shrink: 0; }
+
+  /* TABLE */
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { background: #333333; color: white; padding: 8px 10px; text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px; }
+  .s-product th { background: #FF6B6B; }
+  .s-timeline th { background: #2BB5A8; }
+  td { padding: 6px 10px; border-bottom: 1px solid #eee; vertical-align: top; }
+  td:first-child { font-weight: 600; color: #555; white-space: nowrap; }
+  td input, td textarea { border: none; outline: none; background: transparent; font-family: inherit; font-size: 12px; width: 100%; color: #333; resize: none; }
+  td textarea { min-height: 32px; }
+  tr:hover td { background: #f9f9f9; }
+  tr:last-child td { border-bottom: none; }
+
+  /* RISK TABLE */
+  .risk-row td:first-child { color: #FF6B6B; font-weight: 700; }
+
+  /* MEASURES GRID */
+  .measures-grid { display: flex; flex-direction: column; gap: 6px; }
+  .measure-row { display: flex; align-items: center; gap: 10px; background: #F4F4F4; border-radius: 4px; padding: 6px 10px; }
+  .measure-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .dot-teal { background: #2BB5A8; }
+  .dot-coral { background: #FF6B6B; }
+  .dot-dark { background: #333333; }
+  .measure-row input { border: none; outline: none; background: transparent; font-family: inherit; font-size: 12px; color: #333; flex: 1; }
+
+  /* TIMELINE */
+  .timeline-phases { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .phase { background: white; border-radius: 6px; padding: 12px; border-top: 3px solid #2BB5A8; }
+  .phase.phase-review { border-top-color: #FF6B6B; }
+  .phase h4 { font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: #2BB5A8; font-weight: 700; margin-bottom: 6px; }
+  .phase.phase-review h4 { color: #FF6B6B; }
+  .phase textarea { border: none; outline: none; background: transparent; font-family: inherit; font-size: 12px; color: #333; width: 100%; resize: none; min-height: 60px; }
+
+  /* SUCCESS */
+  .success-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .success-card { border-radius: 6px; padding: 12px; }
+  .success-card.good { background: rgba(43,181,168,0.08); border: 1px solid rgba(43,181,168,0.3); }
+  .success-card.stop { background: rgba(255,107,107,0.08); border: 1px solid rgba(255,107,107,0.3); }
+  .success-card h4 { font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 700; margin-bottom: 6px; }
+  .success-card.good h4 { color: #2BB5A8; }
+  .success-card.stop h4 { color: #FF6B6B; }
+  .success-card textarea { border: none; outline: none; background: transparent; font-family: inherit; font-size: 12px; color: #333; width: 100%; resize: none; min-height: 52px; }
+
+  /* PRINT BUTTON */
+  .print-bar { background: #F4F4F4; padding: 14px 36px; display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid #eee; }
+  .btn { padding: 8px 20px; border-radius: 5px; font-size: 12px; font-weight: 600; cursor: pointer; border: none; }
+  .btn-primary { background: #2BB5A8; color: white; }
+  .btn-secondary { background: white; color: #333; border: 1px solid #ddd; }
+  .btn:hover { opacity: 0.88; }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo-box" id="logoBox" title="Click to upload your logo">
+      <img id="logoImg" alt="Logo">
+      <span id="logoPlaceholder">CLICK TO<br>ADD LOGO</span>
+      <input id="logoInput" type="file" accept="image/*" />
+    </div>
+    <div class="header-text">
+      <h1>3P Learning Model — Initiative Template</h1>
+      <p>Sales Enablement · Presage · Process · Product</p>
+    </div>
+  </div>
+
+  <!-- META BAR -->
+  <div class="meta-bar">
+    <div class="meta-item">
+      <label>Initiative Name</label>
+      <input type="text" placeholder="e.g., Improve Discovery Quality — Mid-Market">
+    </div>
+    <div class="meta-item">
+      <label>Owner</label>
+      <input type="text" placeholder="Name / Team">
+    </div>
+    <div class="meta-item">
+      <label>Start Date</label>
+      <input type="text" placeholder="DD/MM/YYYY">
+    </div>
+    <div class="meta-item">
+      <label>Review Date</label>
+      <input type="text" placeholder="DD/MM/YYYY">
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="body">
+
+    <!-- OBJECTIVE -->
+    <div class="objective-block">
+      <label>🎯 Business Objective</label>
+      <textarea placeholder="What business outcome are we aiming to influence? e.g., Increase Stage 2→3 conversion from X% to Y% in 60 days"></textarea>
+    </div>
+
+    <!-- ── PRESAGE ── -->
+    <section class="s-presage">
+      <div class="section-header">
+        <div class="section-pill">P1</div>
+        <div>
+          <div class="section-title">PRESAGE — Setup Conditions</div>
+          <div class="section-subtitle">Define who, diagnose constraints, establish baseline before training begins</div>
+        </div>
+      </div>
+      <div class="section-body">
+
+        <!-- Population -->
+        <div class="subsection">
+          <h3>Population — Who</h3>
+          <div class="three-col">
+            <div class="field">
+              <label>Roles</label>
+              <input type="text" placeholder="e.g., AEs, SDRs, RMs">
+            </div>
+            <div class="field">
+              <label>Tenure Band</label>
+              <input type="text" placeholder="e.g., 0–6m, 6–18m, 18m+">
+            </div>
+            <div class="field">
+              <label>Segment / Region</label>
+              <input type="text" placeholder="e.g., Mid-Market EMEA">
+            </div>
+          </div>
+        </div>
+
+        <!-- Constraints -->
+        <div class="subsection">
+          <h3>Current Constraints — Tick All That Apply</h3>
+          <div class="checklist">
+            <label class="check-item"><input type="checkbox"> Stage definitions unclear</label>
+            <label class="check-item"><input type="checkbox"> Incentives misaligned</label>
+            <label class="check-item"><input type="checkbox"> ICP unclear / shifting</label>
+            <label class="check-item"><input type="checkbox"> Managers under-skilled for coaching</label>
+            <label class="check-item"><input type="checkbox"> Low data hygiene / tooling friction</label>
+            <label class="check-item"><input type="checkbox"> Low psychological safety</label>
+            <label class="check-item"><input type="checkbox"> Low capacity / competing priorities</label>
+            <label class="check-item"><input type="checkbox"> Leadership inconsistency ("do it" vs "ship it")</label>
+          </div>
+        </div>
+
+        <!-- Baseline Measures -->
+        <div class="subsection">
+          <h3>Presage Measures — Baseline</h3>
+          <div class="measures-grid">
+            <div class="measure-row"><span class="measure-dot dot-teal"></span><input type="text" placeholder="% reps with clear ICP + qualification definition (quiz score)"></div>
+            <div class="measure-row"><span class="measure-dot dot-teal"></span><input type="text" placeholder="Manager coaching capability self/peer score"></div>
+            <div class="measure-row"><span class="measure-dot dot-teal"></span><input type="text" placeholder="CRM hygiene index (required fields completion; stage age)"></div>
+            <div class="measure-row"><span class="measure-dot dot-teal"></span><input type="text" placeholder="Time capacity (meeting load; enablement hours available)"></div>
+          </div>
+        </div>
+
+        <!-- Presage Actions -->
+        <div class="subsection">
+          <h3>Presage Actions — What We'll Change BEFORE Training</h3>
+          <div class="field">
+            <label>Action 1</label>
+            <input type="text" placeholder="e.g., Align on ICP definition with Sales & Marketing leadership">
+          </div>
+          <br>
+          <div class="field">
+            <label>Action 2</label>
+            <input type="text" placeholder="e.g., Complete manager coaching readiness assessment">
+          </div>
+          <br>
+          <div class="field">
+            <label>Action 3</label>
+            <input type="text" placeholder="e.g., Fix CRM stage fields and reduce friction in tooling">
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── PROCESS ── -->
+    <section class="s-process">
+      <div class="section-header">
+        <div class="section-pill">P2</div>
+        <div>
+          <div class="section-title">PROCESS — Learning + Reinforcement Loops</div>
+          <div class="section-subtitle">Design the mechanisms that drive behaviour change over time</div>
+        </div>
+      </div>
+      <div class="section-body">
+
+        <!-- Mechanisms -->
+        <div class="subsection">
+          <h3>Learning Mechanisms</h3>
+          <table>
+            <tr><th style="width:22%">Mechanism</th><th>Design (Where, How Often, With What Artefact?)</th><th style="width:28%">Owner</th></tr>
+            <tr>
+              <td>Practice</td>
+              <td><textarea placeholder="e.g., Weekly 20-min role play in team huddle using call rubric card"></textarea></td>
+              <td><input type="text" placeholder="Who leads?"></td>
+            </tr>
+            <tr>
+              <td>Feedback</td>
+              <td><textarea placeholder="e.g., Manager reviews 1 recorded call/rep/week, scores against rubric"></textarea></td>
+              <td><input type="text" placeholder="Who leads?"></td>
+            </tr>
+            <tr>
+              <td>Coaching Cadence</td>
+              <td><textarea placeholder="e.g., Weekly 1:1 deal review, bi-weekly call review session"></textarea></td>
+              <td><input type="text" placeholder="Who leads?"></td>
+            </tr>
+            <tr>
+              <td>Inspection</td>
+              <td><textarea placeholder="e.g., Director reviews CRM hygiene and rubric scores in weekly pipeline review"></textarea></td>
+              <td><input type="text" placeholder="Who leads?"></td>
+            </tr>
+            <tr>
+              <td>Peer Learning</td>
+              <td><textarea placeholder="e.g., Monthly deal pods — 3 AEs share a win/loss with structured debrief"></textarea></td>
+              <td><input type="text" placeholder="Who leads?"></td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- Weekly Measures -->
+        <div class="subsection">
+          <h3>Process Measures — Weekly Tracking</h3>
+          <div class="measures-grid">
+            <div class="measure-row"><span class="measure-dot dot-dark"></span><input type="text" placeholder="Coached reps per week per manager (target: ___)"></div>
+            <div class="measure-row"><span class="measure-dot dot-dark"></span><input type="text" placeholder="% of reps receiving call feedback per week (target: ___)"></div>
+            <div class="measure-row"><span class="measure-dot dot-dark"></span><input type="text" placeholder="Practice reps completed per week — role plays, recorded drills (target: ___)"></div>
+            <div class="measure-row"><span class="measure-dot dot-dark"></span><input type="text" placeholder="Deal review adherence — % of team attending (target: ___)"></div>
+            <div class="measure-row"><span class="measure-dot dot-dark"></span><input type="text" placeholder="Quality score — call rubric average and trend (target: ___)"></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── PRODUCT ── -->
+    <section class="s-product">
+      <div class="section-header">
+        <div class="section-pill">P3</div>
+        <div>
+          <div class="section-title">PRODUCT — Outcomes</div>
+          <div class="section-subtitle">Define the leading and lagging indicators that signal whether it's working</div>
+        </div>
+      </div>
+      <div class="section-body">
+
+        <div class="two-col">
+          <!-- Leading -->
+          <div class="subsection">
+            <h3>Leading Indicators (2–6 Weeks)</h3>
+            <div class="measures-grid">
+              <div class="measure-row"><span class="measure-dot dot-coral"></span><input type="text" placeholder="Stage 2→3 conversion rate"></div>
+              <div class="measure-row"><span class="measure-dot dot-coral"></span><input type="text" placeholder="Stage duration (days in stage)"></div>
+              <div class="measure-row"><span class="measure-dot dot-coral"></span><input type="text" placeholder="Discovery score improvement (rubric)"></div>
+              <div class="measure-row"><span class="measure-dot dot-coral"></span><input type="text" placeholder="Mutual plan adoption rate"></div>
+              <div class="measure-row"><span class="measure-dot dot-coral"></span><input type="text" placeholder="Next-step quality score"></div>
+            </div>
+          </div>
+          <!-- Lagging -->
+          <div class="subsection">
+            <h3>Lagging Indicators (1–2 Quarters)</h3>
+            <div class="measures-grid">
+              <div class="measure-row"><span class="measure-dot dot-coral"></span><input type="text" placeholder="Win rate (by segment)"></div>
+              <div class="measure-row"><span class="measure-dot dot-coral"></span><input type="text" placeholder="Sales cycle length"></div>
+              <div class="measure-row"><span class="measure-dot dot-coral"></span><input type="text" placeholder="Forecast accuracy"></div>
+              <div class="measure-row"><span class="measure-dot dot-coral"></span><input type="text" placeholder="Discounting trend"></div>
+              <div class="measure-row"><span class="measure-dot dot-coral"></span><input type="text" placeholder="Ramp time for new hires"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Success Criteria -->
+        <div class="subsection">
+          <h3>Success Criteria</h3>
+          <div class="success-grid">
+            <div class="success-card good">
+              <h4>✓ "Good" — Scale Threshold</h4>
+              <textarea placeholder="Define what good looks like. e.g., Stage 2→3 conversion improves by 8%+ within 6 weeks; call rubric average ≥ 3.5/5"></textarea>
+            </div>
+            <div class="success-card stop">
+              <h4>✗ "Stop / Change" Threshold</h4>
+              <textarea placeholder="Define the signal to pause or pivot. e.g., No measurable improvement after 4 weeks; manager coaching adherence below 50%"></textarea>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── RISKS ── -->
+    <section class="s-risks">
+      <div class="section-header">
+        <div class="section-pill">⚠</div>
+        <div>
+          <div class="section-title">Risks & Mitigations</div>
+          <div class="section-subtitle">Top risks and how we'll address them</div>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="subsection">
+          <table>
+            <tr><th style="width:5%">#</th><th style="width:30%">Risk</th><th style="width:30%">Impact</th><th>Mitigation</th></tr>
+            <tr class="risk-row">
+              <td>1</td>
+              <td><input type="text" placeholder="e.g., Manager inconsistency"></td>
+              <td><input type="text" placeholder="e.g., Reinforcement loop breaks down"></td>
+              <td><input type="text" placeholder="e.g., Weekly manager check-in; shared rubric"></td>
+            </tr>
+            <tr class="risk-row">
+              <td>2</td>
+              <td><input type="text" placeholder="e.g., Time pressure / competing priorities"></td>
+              <td><input type="text" placeholder="e.g., Low practice completion rates"></td>
+              <td><input type="text" placeholder="e.g., Embed in existing rituals; 20-min max sessions"></td>
+            </tr>
+            <tr class="risk-row">
+              <td>3</td>
+              <td><input type="text" placeholder="e.g., Poor CRM data quality"></td>
+              <td><input type="text" placeholder="e.g., Cannot measure leading indicators"></td>
+              <td><input type="text" placeholder="e.g., CRM hygiene sprint in Week 0"></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── TIMELINE ── -->
+    <section class="s-timeline">
+      <div class="section-header">
+        <div class="section-pill">📅</div>
+        <div>
+          <div class="section-title">Timeline</div>
+          <div class="section-subtitle">6-week implementation roadmap</div>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="subsection">
+          <div class="timeline-phases">
+            <div class="phase">
+              <h4>Week 0</h4>
+              <textarea placeholder="Baseline measurement + presage fixes. Align stakeholders. Set up CRM tracking."></textarea>
+            </div>
+            <div class="phase">
+              <h4>Weeks 1–2</h4>
+              <textarea placeholder="Pilot with small cohort. Launch coaching loops. First call reviews completed."></textarea>
+            </div>
+            <div class="phase">
+              <h4>Weeks 3–6</h4>
+              <textarea placeholder="Expand to full team. Measure leading indicators weekly. Iterate on rubric and feedback quality."></textarea>
+            </div>
+            <div class="phase phase-review">
+              <h4>Week 6 — Review</h4>
+              <textarea placeholder="Data review: Scale / Adjust / Stop decision. Share findings with leadership."></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /body -->
+
+  <!-- PRINT BAR -->
+  <div class="print-bar no-print">
+    <button class="btn btn-secondary" onclick="window.print()">🖨 Print / Save as PDF</button>
+    <button class="btn btn-primary" onclick="clearAll()">↺ Clear All Fields</button>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+(function initLogoUpload(){
+  const box = document.getElementById('logoBox');
+  const input = document.getElementById('logoInput');
+  const img = document.getElementById('logoImg');
+
+  if(!box || !input || !img) return;
+
+  // Load previously saved logo (per-user, per-browser)
+  try {
+    const saved = localStorage.getItem('threeP_logo_dataurl');
+    if(saved){
+      img.src = saved;
+      img.style.display = 'block';
+      box.classList.add('has-logo');
+    }
+  } catch(e){ /* ignore */ }
+
+  box.addEventListener('click', () => input.click());
+
+  input.addEventListener('change', () => {
+    const file = input.files && input.files[0];
+    if(!file) return;
+
+    if(!file.type || !file.type.startsWith('image/')){
+      alert('Please upload an image file (PNG, JPG, SVG, etc.).');
+      input.value = '';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = reader.result;
+      img.src = dataUrl;
+      img.style.display = 'block';
+      box.classList.add('has-logo');
+      try { localStorage.setItem('threeP_logo_dataurl', dataUrl); } catch(e){ /* ignore */ }
+    };
+    reader.readAsDataURL(file);
+  });
+})();
+
+function clearAll() {
+  if (confirm('Clear all fields and start fresh?')) {
+    document.querySelectorAll('input[type=text], textarea').forEach(el => el.value = '');
+    document.querySelectorAll('input[type=checkbox]').forEach(el => el.checked = false);
+
+    // Clear logo
+    const box = document.getElementById('logoBox');
+    const img = document.getElementById('logoImg');
+    const input = document.getElementById('logoInput');
+    if(img){ img.src = ''; img.style.display = 'none'; }
+    if(box){ box.classList.remove('has-logo'); }
+    if(input){ input.value = ''; }
+    try { localStorage.removeItem('threeP_logo_dataurl'); } catch(e){ /* ignore */ }
+  }
+}
+</script>
+</body>
+</html>
